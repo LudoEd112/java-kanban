@@ -3,7 +3,7 @@ import service.TaskManager;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidInputException {
         TaskManager taskManager = new TaskManager();
 
         Task task1 = new Task("Попить", "Сок", Statuses.NEW);
@@ -20,7 +20,7 @@ public class Main {
         Subtask subtask2 =  new Subtask("Накопить деньги", "10_000$",Statuses.IN_PROGRESS, epic1);
         taskManager.createSubTask(subtask2);
 
-        Epic epic2 = new Epic("Съездить в Москву", "Лондон");
+        Epic epic2 = new Epic("Съездить в Москву", "Отдых");
         taskManager.createEpic(epic2);
 
         Subtask subtask3 = new Subtask("Накопить денег", "60_000 руб.", Statuses.IN_PROGRESS,epic2);
@@ -31,5 +31,6 @@ public class Main {
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
         System.out.println(taskManager.getEpicById(3));
+        System.out.println(taskManager.getTaskById(12));
     }
 }

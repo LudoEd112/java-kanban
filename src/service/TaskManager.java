@@ -1,6 +1,10 @@
 package service;
 
-import model.*;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import model.Statuses;
+import model.InvalidInputException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +24,7 @@ public class TaskManager {
     }
 
 
+
     public void createTask(Task task) {
         task.setId(++id);
         tasks.put(id, task);
@@ -31,11 +36,11 @@ public class TaskManager {
     }
 
 
-    public Task getTaskById(int id) {
+    public Task getTaskById(int id) throws InvalidInputException {
         if (tasks.containsKey(id)) {
             return tasks.get(id);
         } else {
-            throw new RuntimeException("Такой задачи не существует");
+            throw new InvalidInputException("Такой задачи не существует");
         }
     }
 
@@ -44,11 +49,11 @@ public class TaskManager {
     }
 
 
-    public void removeTaskById(int id) {
+    public void removeTaskById(int id) throws InvalidInputException {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
         } else {
-            throw new RuntimeException("Такой задачи не существует");
+            throw new InvalidInputException("Такой задачи не существует");
         }
     }
 
@@ -69,11 +74,11 @@ public class TaskManager {
         checkStatus(epic);
     }
 
-    public Epic getEpicById(int id) {
+    public Epic getEpicById(int id) throws InvalidInputException {
         if (epics.containsKey(id)) {
             return epics.get(id);
         } else {
-            throw new RuntimeException("Такого эпика не существует");
+            throw new InvalidInputException("Такого эпика не существует");
         }
     }
 
@@ -81,7 +86,7 @@ public class TaskManager {
         return epics;
     }
 
-    public void removeEpicById(int id) {
+    public void removeEpicById(int id) throws InvalidInputException {
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
             epics.remove(id);
@@ -90,7 +95,7 @@ public class TaskManager {
             }
             epic.setEpicSubtasks(new ArrayList<>());
         } else {
-            throw new RuntimeException("Такого эпика не существует");
+            throw new InvalidInputException("Такого эпика не существует");
         }
     }
 
@@ -103,10 +108,9 @@ public class TaskManager {
     public void createSubTask(Subtask subtask) {
         subtask.setId(++id);
         subtasks.put(id, subtask);
-        if (subtask.getEpicId() != 0) {
-            subtask.getEpic().getEpicSubtasks().add(id);
-            checkStatus(subtask.getEpic());
-        }
+        subtask.getEpic().getEpicSubtasks().add(id);
+        checkStatus(subtask.getEpic());
+
     }
 
     public void updateSubtask(Subtask subtask) {
@@ -114,11 +118,11 @@ public class TaskManager {
         checkStatus(subtask.getEpic());
     }
 
-    public Subtask getSubtasksById(int id) {
+    public Subtask getSubtasksById(int id) throws InvalidInputException {
         if (subtasks.containsKey(id)) {
             return subtasks.get(id);
         } else {
-            throw new RuntimeException("Такой задачи не существует");
+            throw new InvalidInputException("Такой задачи не существует");
         }
     }
 
