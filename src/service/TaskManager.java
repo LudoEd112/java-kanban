@@ -1,187 +1,51 @@
 package service;
 
 import model.Epic;
+import model.InvalidInputException;
 import model.Subtask;
 import model.Task;
-import model.Statuses;
-import model.InvalidInputException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TaskManager {
-    private int id;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+public interface TaskManager {
+    void createTask(Task task);
 
-    public TaskManager() {
-        id = 0;
-        tasks = new HashMap<>();
-        subtasks = new HashMap<>();
-        epics = new HashMap<>();
-    }
+    void updateTask(Task task);
 
+    Task getTaskById(int id) throws InvalidInputException;
 
+    List<Task> getAllTasks();
 
-    public void createTask(Task task) {
-        task.setId(++id);
-        tasks.put(id, task);
-    }
+    void removeTaskById(int id) throws InvalidInputException;
 
+    void removeAllTasks();
 
-    public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
-    }
+    void createEpic(Epic epic);
 
+    void updateEpic(Epic epic);
 
-    public Task getTaskById(int id) throws InvalidInputException {
-        if (tasks.containsKey(id)) {
-            return tasks.get(id);
-        } else {
-            throw new InvalidInputException("Такой задачи не существует");
-        }
-    }
+    Epic getEpicById(int id) throws InvalidInputException;
 
-    public List<Task> getAllTasks() {
-        return new ArrayList<>(tasks.values());
-    }
+    HashMap<Integer, Epic> getAllEpics();
 
+    void removeEpicById(int id) throws InvalidInputException;
 
-    public void removeTaskById(int id) throws InvalidInputException {
-        if (tasks.containsKey(id)) {
-            tasks.remove(id);
-        } else {
-            throw new InvalidInputException("Такой задачи не существует");
-        }
-    }
+    void removeAllEpics();
 
-    public void removeAllTasks() {
-        tasks.clear();
-    }
+    void createSubTask(Subtask subtask);
 
+    void updateSubtask(Subtask subtask);
 
-    public void createEpic(Epic epic) {
-        epic.setId(++id);
-        epic.setStatus(Statuses.NEW);
-        epics.put(id, epic);
-    }
+    Subtask getSubtasksById(int id) throws InvalidInputException;
 
-    public void updateEpic(Epic epic) {
-        epic.setEpicSubtasks(epics.get(epic.getId()).getEpicSubtasks());
-        epics.put(epic.getId(), epic);
-        checkStatus(epic);
-    }
+    HashMap<Integer, Subtask> getAllSubtasks();
 
-    public Epic getEpicById(int id) throws InvalidInputException {
-        if (epics.containsKey(id)) {
-            return epics.get(id);
-        } else {
-            throw new InvalidInputException("Такого эпика не существует");
-        }
-    }
+    void removeSubtaskById(int id);
 
-    public HashMap<Integer, Epic> getAllEpics() {
-        return epics;
-    }
+    void removeAllSubtask();
 
-    public void removeEpicById(int id) throws InvalidInputException {
-        if (epics.containsKey(id)) {
-            Epic epic = epics.get(id);
-            epics.remove(id);
-            for (Integer subtaskId : epic.getEpicSubtasks()) {
-                subtasks.remove(subtaskId);
-            }
-            epic.setEpicSubtasks(new ArrayList<>());
-        } else {
-            throw new InvalidInputException("Такого эпика не существует");
-        }
-    }
+    void addHistory();
 
-    public void removeAllEpics() {
-        epics.clear();
-        subtasks.clear();
-    }
-
-
-    public void createSubTask(Subtask subtask) {
-        subtask.setId(++id);
-        subtasks.put(id, subtask);
-        subtask.getEpic().getEpicSubtasks().add(id);
-        checkStatus(subtask.getEpic());
-
-    }
-
-    public void updateSubtask(Subtask subtask) {
-        subtasks.put(subtask.getId(), subtask);
-        checkStatus(subtask.getEpic());
-    }
-
-    public Subtask getSubtasksById(int id) throws InvalidInputException {
-        if (subtasks.containsKey(id)) {
-            return subtasks.get(id);
-        } else {
-            throw new InvalidInputException("Такой задачи не существует");
-        }
-    }
-
-    public HashMap<Integer, Subtask> getAllSubtasks() {
-        return subtasks;
-    }
-
-    public void removeSubtaskById(int id) {
-        if (subtasks.containsKey(id)) {
-            Epic epic = subtasks.get(id).getEpic();
-            epic.getEpicSubtasks().remove((Integer) id);
-            checkStatus(epic);
-            subtasks.remove(id);
-        }
-    }
-
-    public void removeAllSubtask() {
-        ArrayList<Epic> epicsForSubtasks = new ArrayList<>();
-        for (Subtask subtask : subtasks.values()) {
-            subtask.getEpic().setEpicSubtasks(new ArrayList<>());
-            if (!epicsForSubtasks.contains(subtask.getEpic())) {
-                epicsForSubtasks.add(subtask.getEpic());
-            }
-        }
-        subtasks.clear();
-        for (Epic epic : epicsForSubtasks) {
-            epic.setStatus(Statuses.NEW);
-        }
-    }
-
-
-    private void checkStatus(Epic epic) {
-
-        if (epic.getEpicSubtasks().isEmpty()) {
-            epic.setStatus(Statuses.NEW);
-            return;
-        }
-
-        boolean allNew = true;
-        boolean allDone = true;
-
-        for (Integer epicSubtaskId : epic.getEpicSubtasks()) {
-            Statuses status = subtasks.get(epicSubtaskId).getStatus();
-            if (!status.equals(Statuses.NEW)) {
-                allNew = false;
-            }
-            if (!status.equals(Statuses.DONE)) {
-                allDone = false;
-            }
-        }
-
-        if (allDone) {
-            epic.setStatus(Statuses.DONE);
-        } else if (allNew) {
-            epic.setStatus(Statuses.NEW);
-        } else {
-            epic.setStatus(Statuses.IN_PROGRESS);
-        }
-
-    }
-
+    List<Task> getHistory();
 }

@@ -1,36 +1,45 @@
 import model.*;
+import service.Managers;
 import service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) throws InvalidInputException {
-        TaskManager taskManager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
+
 
         Task task1 = new Task("Попить", "Сок", Statuses.NEW);
-        taskManager.createTask(task1);
+        manager.createTask(task1);
         Task task2 = new Task("поесть", "Булочка", Statuses.IN_PROGRESS);
-        taskManager.createTask(task2);
+        manager.createTask(task2);
 
         Epic epic1 = new Epic("Съездить в Англию", "Лондон");
-        taskManager.createEpic(epic1);
+        manager.createEpic(epic1);
 
         Subtask subtask1 = new Subtask("Выучить язык", "Английский", Statuses.DONE,epic1);
-        taskManager.createSubTask(subtask1);
+        manager.createSubTask(subtask1);
 
         Subtask subtask2 =  new Subtask("Накопить деньги", "10_000$",Statuses.IN_PROGRESS, epic1);
-        taskManager.createSubTask(subtask2);
+        manager.createSubTask(subtask2);
 
         Epic epic2 = new Epic("Съездить в Москву", "Отдых");
-        taskManager.createEpic(epic2);
+        manager.createEpic(epic2);
 
         Subtask subtask3 = new Subtask("Накопить денег", "60_000 руб.", Statuses.IN_PROGRESS,epic2);
-        taskManager.createSubTask(subtask3);
+        manager.createSubTask(subtask3);
 
 
-        System.out.println(taskManager.getAllTasks());
-        System.out.println(taskManager.getAllEpics());
-        System.out.println(taskManager.getAllSubtasks());
-        System.out.println(taskManager.getEpicById(3));
-        System.out.println(taskManager.getTaskById(12));
+        System.out.println(manager.getAllTasks());
+        System.out.println(manager.getAllEpics());
+        System.out.println(manager.getAllSubtasks());
+        System.out.println(manager.getEpicById(3));
+
+
+        manager.addHistory();
+
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
+        }
     }
 }
