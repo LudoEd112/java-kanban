@@ -5,8 +5,9 @@ import model.InvalidInputException;
 import model.Subtask;
 import model.Task;
 
-import java.util.HashMap;
+
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     void createTask(Task task);
@@ -27,7 +28,7 @@ public interface TaskManager {
 
     Epic getEpicById(int id) throws InvalidInputException;
 
-    HashMap<Integer, Epic> getAllEpics();
+    Map<Integer, Epic> getAllEpics();
 
     void removeEpicById(int id) throws InvalidInputException;
 
@@ -39,7 +40,7 @@ public interface TaskManager {
 
     Subtask getSubtasksById(int id) throws InvalidInputException;
 
-    HashMap<Integer, Subtask> getAllSubtasks();
+    Map<Integer, Subtask> getAllSubtasks();
 
     void removeSubtaskById(int id);
 

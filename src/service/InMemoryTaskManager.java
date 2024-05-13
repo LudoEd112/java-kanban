@@ -9,12 +9,13 @@ import model.InvalidInputException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
-    private final HashMap<Integer, Epic> epics;
+    private final Map<Integer, Task> tasks;
+    private final Map<Integer, Subtask> subtasks;
+    private final Map<Integer, Epic> epics;
     private final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
@@ -25,20 +26,16 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager = Managers.getDefaultHistory();
     }
 
-
-
     @Override
     public void createTask(Task task) {
         task.setId(++id);
         tasks.put(id, task);
     }
 
-
     @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
     }
-
 
     @Override
     public Task getTaskById(int id) throws InvalidInputException {
@@ -54,7 +51,6 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(tasks.values());
     }
 
-
     @Override
     public void removeTaskById(int id) throws InvalidInputException {
         if (tasks.containsKey(id)) {
@@ -68,7 +64,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllTasks() {
         tasks.clear();
     }
-
 
     @Override
     public void createEpic(Epic epic) {
@@ -94,7 +89,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HashMap<Integer, Epic> getAllEpics() {
+    public Map<Integer, Epic> getAllEpics() {
         return epics;
     }
 
@@ -117,7 +112,6 @@ public class InMemoryTaskManager implements TaskManager {
         epics.clear();
         subtasks.clear();
     }
-
 
     @Override
     public void createSubTask(Subtask subtask) {
@@ -144,7 +138,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HashMap<Integer, Subtask> getAllSubtasks() {
+    public Map<Integer, Subtask> getAllSubtasks() {
         return subtasks;
     }
 
@@ -173,7 +167,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-
     private void checkStatus(Epic epic) {
 
         if (epic.getEpicSubtasks().isEmpty()) {
@@ -201,7 +194,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Statuses.IN_PROGRESS);
         }
-
     }
 
     @Override
@@ -215,5 +207,4 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
-
 }

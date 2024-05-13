@@ -1,6 +1,11 @@
 package service;
 
-import model.*;
+import model.Task;
+import model.Epic;
+import model.Subtask;
+import model.Statuses;
+import model.InvalidInputException;
+
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +22,6 @@ public class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description",
                 Statuses.DONE,epic1);
         taskManager.createTask(subtask1);
-
 
         assertEquals(3, taskManager.getAllTasks().size());
 
