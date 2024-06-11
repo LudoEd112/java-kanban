@@ -198,7 +198,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addHistory() {
-        for (Task task : tasks.values()){
+        for (Task task : tasks.values()) {
             historyManager.add(task);
         }
     }
