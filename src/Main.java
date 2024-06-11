@@ -10,8 +10,9 @@ public class Main {
 
         Task task1 = new Task("Попить", "Сок", Statuses.NEW);
         manager.createTask(task1);
-        Task task2 = new Task("поесть", "Булочка", Statuses.IN_PROGRESS);
+        Task task2 = new Task("Поесть", "Булочка", Statuses.IN_PROGRESS);
         manager.createTask(task2);
+        manager.addHistory();
 
         Epic epic1 = new Epic("Съездить в Англию", "Лондон");
         manager.createEpic(epic1);

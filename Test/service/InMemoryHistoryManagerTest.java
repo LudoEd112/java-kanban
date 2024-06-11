@@ -1,15 +1,16 @@
 package service;
 
-import model.Statuses;
-import model.Task;
+import model.*;
 
 import org.junit.jupiter.api.Test;
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryHistoryManagerTest {
 
     @Test
-    void SavingPreviousVersionAndData() {
+    void SavingPreviousVersionAndDataWithoutRepetitions() {
         HistoryManager historyManager = new InMemoryHistoryManager();
         TaskManager taskManager = new InMemoryTaskManager();
         Task task1 = new Task("Task 1", "Description 1", Statuses.NEW);
@@ -22,9 +23,12 @@ class InMemoryHistoryManagerTest {
 
         historyManager.add(task2);
 
+        historyManager.add(task1);
+        historyManager.add(task2);
+
         assertEquals(historyManager.getHistory().getFirst(), task1);
         assertEquals(historyManager.getHistory().get(1), task2);
-
+        assertEquals(historyManager.getHistory().size(),2);
 
         assertEquals(historyManager.getHistory().getFirst().getStatus(), task1.getStatus());
 
