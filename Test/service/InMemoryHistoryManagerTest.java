@@ -32,6 +32,5 @@ class InMemoryHistoryManagerTest {
 
         assertEquals(historyManager.getHistory().getFirst().getStatus(), task1.getStatus());
 
-
     }
 }

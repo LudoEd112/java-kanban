@@ -9,7 +9,6 @@ import model.Node;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-
     private final HashMap<Integer, Node<Task>> history;
     private Node<Task> head;
     private Node<Task> tail;
@@ -17,6 +16,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     public InMemoryHistoryManager() {
         this.history = new HashMap<>();
     }
+
     @Override
     public void add(Task task) {
         if (task != null) {
