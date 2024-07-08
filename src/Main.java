@@ -34,9 +34,6 @@ public class Main {
         System.out.println(manager.getAllSubtasks());
         System.out.println(manager.getEpicById(3));
 
-
-        manager.addHistory();
-
         System.out.println("История:");
         for (Task task : manager.getHistory()) {
             System.out.println(task);
