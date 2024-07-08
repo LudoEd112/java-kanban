@@ -30,7 +30,7 @@ public class Task {
         this.typesOfTasks = typesOfTasks;
     }
 
-    public Task( int id, String title, String description, TypesOfTasks typesOfTasks) {
+    public Task(int id, String title, String description, TypesOfTasks typesOfTasks) {
         this.id = id;
         this.title = title;
         this.description = description;
