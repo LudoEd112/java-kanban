@@ -1,6 +1,6 @@
 package service;
 
-import Exceptions.FileCreationException;
+import exceptions.FileCreationException;
 import model.*;
 
 import java.io.*;
