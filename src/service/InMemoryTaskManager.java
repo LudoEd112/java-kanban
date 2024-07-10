@@ -4,7 +4,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.Statuses;
-import model.InvalidInputException;
+import exceptions.InvalidInputException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubtask() {
-        ArrayList<Epic> epicsForSubtasks = new ArrayList<>();
+        List<Epic> epicsForSubtasks = new ArrayList<>();
         for (Subtask subtask : subtasks.values()) {
             subtask.getEpic().setEpicSubtasks(new ArrayList<>());
             if (!epicsForSubtasks.contains(subtask.getEpic())) {

@@ -1,6 +1,7 @@
 package service;
 
 import exceptions.FileCreationException;
+import exceptions.InvalidInputException;
 import model.*;
 
 import java.io.*;
@@ -47,7 +48,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             FileWriter fileWriter = new FileWriter(tasksFilePath.toFile(), StandardCharsets.UTF_8);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("id,type,name,status,description,epic");
+            String header = "id,type,name,status,description,epic";
+            bufferedWriter.write(header);
             bufferedWriter.newLine();
             for (String str : lines) {
                 bufferedWriter.write(str + "\n");
@@ -148,6 +150,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 taskStr = new Subtask(split[2], split[4], Integer.parseInt(split[0]), Statuses.valueOf(split[3]),
                         Integer.parseInt(split[5]));
                 subtasks.put(Integer.parseInt(split[0]), (Subtask) taskStr);
+                break;
+            default:
                 break;
         }
     }

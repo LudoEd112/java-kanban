@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.InvalidInputException;
 import model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

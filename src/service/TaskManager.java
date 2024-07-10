@@ -1,7 +1,7 @@
 package service;
 
 import model.Epic;
-import model.InvalidInputException;
+import exceptions.InvalidInputException;
 import model.Subtask;
 import model.Task;
 
