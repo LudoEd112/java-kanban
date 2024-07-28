@@ -2,7 +2,11 @@ package service;
 
 import exceptions.FileCreationException;
 import exceptions.InvalidInputException;
-import model.*;
+import model.Epic;
+import model.Task;
+import model.Subtask;
+import model.Statuses;
+import model.TypesOfTasks;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -28,37 +32,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return historyFilePath;
     }
 
-    private void save() throws FileCreationException {
-        List<String> lines = new ArrayList<>();
-        try {
-            if (!tasks.isEmpty()) {
-                for (Task task : tasks.values()) {
-                    lines.add(taskToString(task));
-                }
-            }
-            if (!epics.isEmpty()) {
-                for (Epic epic : epics.values()) {
-                    lines.add(taskToString(epic));
-                }
-            }
-            if (!subtasks.isEmpty()) {
-                for (Subtask subtask : subtasks.values()) {
-                    lines.add(taskToString(subtask));
-                }
-            }
-            FileWriter fileWriter = new FileWriter(tasksFilePath.toFile(), StandardCharsets.UTF_8);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            String header = "id,type,name,status,description,epic";
-            bufferedWriter.write(header);
-            bufferedWriter.newLine();
-            for (String str : lines) {
-                bufferedWriter.write(str + "\n");
-            }
-            bufferedWriter.close();
-        } catch (IOException exp) {
-            throw new FileCreationException("Ошибка создания записи");
-        }
-    }
 
     public String taskToString(Task task) {
         String str = task.getId() + "," + task.getTypesOfTasks() + "," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
@@ -83,29 +56,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    public void fromFile() throws IOException {
-        List<String> lines = new ArrayList<>();
-        FileReader fileReader = new FileReader(tasksFilePath.toFile(), StandardCharsets.UTF_8);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+    public void fromFile() throws FileCreationException {
+        try {
+            List<String> lines = new ArrayList<>();
+            FileReader fileReader = new FileReader(tasksFilePath.toFile(), StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-        while (bufferedReader.ready()) {
-            String line = bufferedReader.readLine();
-            lines.add(line);
-        }
-        bufferedReader.close();
-        int max = 0;
-        for (int i = 1; i < lines.size(); i++) {
-            int curId = Integer.parseInt(lines.get(i).split(",")[0]);
-            if (max < curId) {
-                max = curId;
+            while (bufferedReader.ready()) {
+                String line = bufferedReader.readLine();
+                lines.add(line);
             }
-            fromString(lines.get(i));
-        }
-        setId(max);
-        for (Subtask subtask : subtasks.values()) {
-            int epicId = subtask.getEpicId();
-            Epic curEpic = epics.get(epicId);
-            curEpic.getEpicSubtasks().add(subtask.getId());
+            bufferedReader.close();
+            int max = 0;
+            for (int i = 1; i < lines.size(); i++) {
+                int curId = Integer.parseInt(lines.get(i).split(",")[0]);
+                if (max < curId) {
+                    max = curId;
+                }
+                fromString(lines.get(i));
+            }
+            setId(max);
+            for (Subtask subtask : subtasks.values()) {
+                int epicId = subtask.getEpicId();
+                Epic curEpic = epics.get(epicId);
+                curEpic.getEpicSubtasks().add(subtask.getId());
+            }
+        } catch (IOException exp) {
+            throw new FileCreationException("Ошибка создания записи");
         }
     }
 
@@ -132,6 +109,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
+    private void save() throws FileCreationException {
+        List<String> lines = new ArrayList<>();
+        try {
+            if (!tasks.isEmpty()) {
+                for (Task task : tasks.values()) {
+                    lines.add(taskToString(task));
+                }
+            }
+            if (!epics.isEmpty()) {
+                for (Epic epic : epics.values()) {
+                    lines.add(taskToString(epic));
+                }
+            }
+            if (!subtasks.isEmpty()) {
+                for (Subtask subtask : subtasks.values()) {
+                    lines.add(taskToString(subtask));
+                }
+            }
+            FileWriter fileWriter = new FileWriter(tasksFilePath.toFile(), StandardCharsets.UTF_8);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            final String header = "id,type,name,status,description,epic";
+            bufferedWriter.write(header);
+            bufferedWriter.newLine();
+            for (String str : lines) {
+                bufferedWriter.write(str + "\n");
+            }
+            bufferedWriter.close();
+        } catch (IOException exp) {
+            throw new FileCreationException("Ошибка создания записи");
+        }
+    }
+
     private void fromString(String value) {
         String[] split = value.split(",");
         Task taskStr;
@@ -155,8 +164,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 break;
         }
     }
-
-
 
     @Override
     public void createTask(Task task) {
