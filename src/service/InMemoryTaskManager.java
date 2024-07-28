@@ -4,7 +4,7 @@ import model.Epic;
 import model.Subtask;
 import model.Task;
 import model.Statuses;
-import model.InvalidInputException;
+import exceptions.InvalidInputException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int id;
-    private final Map<Integer, Task> tasks;
-    private final Map<Integer, Subtask> subtasks;
-    private final Map<Integer, Epic> epics;
-    private final HistoryManager historyManager;
+    protected int id;
+    protected final Map<Integer, Task> tasks;
+    protected final Map<Integer, Subtask> subtasks;
+    protected final Map<Integer, Epic> epics;
+    protected final HistoryManager historyManager;
 
     public InMemoryTaskManager() {
         id = 0;
@@ -32,6 +32,10 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.put(id, task);
     }
 
+    public void setId(int newId) {
+        id = newId;
+    }
+
     @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
@@ -40,6 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) throws InvalidInputException {
         if (tasks.containsKey(id)) {
+            historyManager.add(tasks.get(id));
             return tasks.get(id);
         } else {
             throw new InvalidInputException("Такой задачи не существует");
@@ -82,6 +87,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) throws InvalidInputException {
         if (epics.containsKey(id)) {
+            historyManager.add(epics.get(id));
             return epics.get(id);
         } else {
             throw new InvalidInputException("Такого эпика не существует");
@@ -131,6 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtasksById(int id) throws InvalidInputException {
         if (subtasks.containsKey(id)) {
+            historyManager.add(subtasks.get(id));
             return subtasks.get(id);
         } else {
             throw new InvalidInputException("Такой задачи не существует");
@@ -154,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubtask() {
-        ArrayList<Epic> epicsForSubtasks = new ArrayList<>();
+        List<Epic> epicsForSubtasks = new ArrayList<>();
         for (Subtask subtask : subtasks.values()) {
             subtask.getEpic().setEpicSubtasks(new ArrayList<>());
             if (!epicsForSubtasks.contains(subtask.getEpic())) {
@@ -193,13 +200,6 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStatus(Statuses.NEW);
         } else {
             epic.setStatus(Statuses.IN_PROGRESS);
-        }
-    }
-
-    @Override
-    public void addHistory() {
-        for (Task task : tasks.values()) {
-            historyManager.add(task);
         }
     }
 

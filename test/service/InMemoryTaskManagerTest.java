@@ -4,7 +4,7 @@ import model.Task;
 import model.Epic;
 import model.Subtask;
 import model.Statuses;
-import model.InvalidInputException;
+import exceptions.InvalidInputException;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;

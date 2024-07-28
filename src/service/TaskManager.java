@@ -1,7 +1,7 @@
 package service;
 
 import model.Epic;
-import model.InvalidInputException;
+import exceptions.InvalidInputException;
 import model.Subtask;
 import model.Task;
 
@@ -45,8 +45,6 @@ public interface TaskManager {
     void removeSubtaskById(int id);
 
     void removeAllSubtask();
-
-    void addHistory();
 
     List<Task> getHistory();
 }
