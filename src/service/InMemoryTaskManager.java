@@ -85,9 +85,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
+        epic.setEndTime(epic.getStartTime().plus(epic.getDuration()));
         epic.setId(++id);
         epic.setStatus(Statuses.NEW);
+        checkTasksIntersections(epic);
         epics.put(id, epic);
+        prioritizedTasks.add(epic);
     }
 
     @Override
@@ -213,22 +216,22 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void timeOfTheEpics(Epic epic) {
-        LocalDateTime startTime = null;
-        LocalDateTime endTime = null;
+        LocalDateTime start = null;
+        LocalDateTime end = null;
         Duration duration = Duration.of(0, ChronoUnit.MINUTES);
         for (Integer subTaskId : epic.getEpicSubtasks()) {
             Subtask subTask = subtasks.get(subTaskId);
             duration = duration.plus(Duration.between(subTask.getStartTime(), subTask.getEndTime()));
-            if (startTime == null || subTask.getStartTime().isBefore(startTime)) {
-                startTime = subtasks.get(subTaskId).getStartTime();
+            if (start == null || subTask.getStartTime().isBefore(start)) {
+                start = subtasks.get(subTaskId).getStartTime();
             }
-            if (endTime == null || subTask.getEndTime().isAfter(endTime)) {
-                endTime = subtasks.get(subTaskId).getEndTime();
+            if (end == null || subTask.getEndTime().isAfter(end)) {
+                end = subtasks.get(subTaskId).getEndTime();
             }
         }
         epic.setDuration(duration);
-        epic.setStartTime(startTime);
-        epic.setEndTime(endTime);
+        epic.setStartTime(start);
+        epic.setEndTime(end);
     }
 
     private void checkStatus(Epic epic) {
