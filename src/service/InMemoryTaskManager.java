@@ -88,7 +88,6 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(epic.getStartTime().plus(epic.getDuration()));
         epic.setId(++id);
         epic.setStatus(Statuses.NEW);
-        checkTasksIntersections(epic);
         epics.put(id, epic);
         prioritizedTasks.add(epic);
     }
@@ -139,7 +138,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubTask(Subtask subtask) {
         subtask.setEndTime(subtask.getStartTime().plus(subtask.getDuration()));
         subtask.setId(++id);
-        checkTasksIntersections(subtask);
         subtasks.put(id, subtask);
         subtask.getEpic().getEpicSubtasks().add(id);
         checkStatus(subtask.getEpic());

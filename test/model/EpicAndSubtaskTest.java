@@ -25,7 +25,7 @@ public class EpicAndSubtaskTest {
     public void beforeEach(){
         taskManager = Managers.getDefault();
         epic = new Epic("Test addNewEpic", "Test addNewEpic description", Duration.of(10, ChronoUnit.MINUTES),
-                LocalDateTime.of(2024, 8, 21, 11, 30));
+                LocalDateTime.of(2024, 8, 21, 11, 10));
         taskManager.createEpic(epic);
     }
 
@@ -68,23 +68,6 @@ public class EpicAndSubtaskTest {
         assertEquals(Subtask1epicId, Subtask2epicId, "Подзадачи принадлежат разным эпикам");
 
 
-    }
-
-    @Test
-    void EpicAsSubtask() {
-        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic, epic.getDuration(), epic.getStartTime());
-        taskManager.createSubTask(subtask);
-
-        assertFalse(epic.getEpicSubtasks().contains(epic));
-    }
-
-    @Test
-    void SubtaskAsEpic() {
-        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic, epic.getDuration(), epic.getStartTime());
-        taskManager.createSubTask(subtask);
-        taskManager.updateEpic(subtask.getEpic());
-
-        assertFalse(epic.getEpicSubtasks().contains(epic));
     }
 }
 

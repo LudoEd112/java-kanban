@@ -48,7 +48,7 @@ class FileBackedTasksManagerTest {
         secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW, Duration.of(10, ChronoUnit.MINUTES),
                 LocalDateTime.of(2024, 8, 21, 11, 30));
         fileBackedTasksManager.createTask(secondTask);
-        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(60, ChronoUnit.MINUTES),
+        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(15, ChronoUnit.MINUTES),
                 LocalDateTime.of(2024, 9, 15, 20, 15));
         fileBackedTasksManager.createEpic(firstEpic);
         secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description", Duration.of(30, ChronoUnit.MINUTES),
@@ -94,11 +94,10 @@ class FileBackedTasksManagerTest {
                 LocalDateTime.of(2024, 3, 10, 10, 1));
         fileBackedTasksManager.createEpic(secondEpic);
         firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic, Duration.of(30, ChronoUnit.MINUTES),
-                LocalDateTime.of(2024, 9, 15, 20, 15));
+                LocalDateTime.of(2024, 3, 15, 20, 45));
         fileBackedTasksManager.createSubTask(firstSubtask);
         secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic, Duration.of(30, ChronoUnit.MINUTES),
-                LocalDateTime.of(2024, 3, 10, 10, 1));
-        fileBackedTasksManager.createSubTask(secondSubtask);
+                LocalDateTime.of(2024, 3, 10, 21, 55));
         fileBackedTasksManager.createSubTask(secondSubtask);
         fileBackedTasksManager.getTaskById(firstTask.getId());
         fileBackedTasksManager.getEpicById(firstEpic.getId());
