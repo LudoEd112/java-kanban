@@ -13,7 +13,7 @@ public class Main {
         Task task2 = new Task("Поесть", "Булочка", Statuses.IN_PROGRESS);
         manager.createTask(task2);
 
-        Epic epic1 = new Epic("Съездить в Англию", "Лондон");
+        /*Epic epic1 = new Epic("Съездить в Англию", "Лондон");
         manager.createEpic(epic1);
 
         Subtask subtask1 = new Subtask("Выучить язык", "Английский", Statuses.DONE,epic1);
@@ -26,7 +26,7 @@ public class Main {
         manager.createEpic(epic2);
 
         Subtask subtask3 = new Subtask("Накопить денег", "60_000 руб.", Statuses.IN_PROGRESS,epic2);
-        manager.createSubTask(subtask3);
+        manager.createSubTask(subtask3);*/
 
         System.out.println(manager.getAllTasks());
         System.out.println(manager.getAllEpics());

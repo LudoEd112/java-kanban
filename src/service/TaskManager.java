@@ -6,11 +6,17 @@ import model.Subtask;
 import model.Task;
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface TaskManager {
     void createTask(Task task);
+
+    List<Task> getPrioritizedTasks();
+
+    void setId(int newId);
 
     void updateTask(Task task);
 

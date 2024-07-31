@@ -1,3 +1,5 @@
+
+
 package model;
 
 import exceptions.InvalidInputException;
@@ -6,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +24,8 @@ public class EpicAndSubtaskTest {
     @BeforeEach
     public void beforeEach(){
         taskManager = Managers.getDefault();
-        epic = new Epic("Test addNewEpic", "Test addNewEpic description");
+        epic = new Epic("Test addNewEpic", "Test addNewEpic description", Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 30));
         taskManager.createEpic(epic);
     }
 
@@ -43,11 +49,13 @@ public class EpicAndSubtaskTest {
     @Test
     void addNewSubtask(){
         Subtask subtask1 = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description",
-                Statuses.DONE,epic);
+                Statuses.DONE,epic, Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 30));
         taskManager.createSubTask(subtask1);
 
         Subtask subtask2 =  new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description",
-                Statuses.IN_PROGRESS, epic);
+                Statuses.IN_PROGRESS, epic, Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 45));
         taskManager.createSubTask(subtask2);
 
         final Map<Integer,Subtask> subtasks = taskManager.getAllSubtasks();
@@ -64,7 +72,7 @@ public class EpicAndSubtaskTest {
 
     @Test
     void EpicAsSubtask() {
-        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic);
+        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic, epic.getDuration(), epic.getStartTime());
         taskManager.createSubTask(subtask);
 
         assertFalse(epic.getEpicSubtasks().contains(epic));
@@ -72,10 +80,11 @@ public class EpicAndSubtaskTest {
 
     @Test
     void SubtaskAsEpic() {
-        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic);
+        Subtask subtask = new Subtask(epic.title, epic.description,epic.status, epic, epic.getDuration(), epic.getStartTime());
         taskManager.createSubTask(subtask);
         taskManager.updateEpic(subtask.getEpic());
 
         assertFalse(epic.getEpicSubtasks().contains(epic));
     }
 }
+

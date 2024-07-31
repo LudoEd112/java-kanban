@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 class TaskTest {
@@ -15,7 +18,8 @@ class TaskTest {
 
     @Test
     void addNewTask() throws InvalidInputException {
-        Task task = new Task("Test addNewTask", "Test addNewTask description", Statuses.NEW);
+        Task task = new Task("Test addNewTask", "Test addNewTask description", Statuses.NEW, Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 30));
         taskManager.createTask(task);
         final int taskId = task.getId();
 

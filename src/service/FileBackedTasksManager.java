@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final Path tasksFilePath;
@@ -129,7 +131,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             }
             FileWriter fileWriter = new FileWriter(tasksFilePath.toFile(), StandardCharsets.UTF_8);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            final String header = "id,type,name,status,description,epic";
+            final String header = "id,type,name,status,description,epic,start time,duration";
             bufferedWriter.write(header);
             bufferedWriter.newLine();
             for (String str : lines) {
@@ -147,17 +149,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         switch (split[1]) {
             case "Task":
-                taskStr = new Task(split[2], split[4], Statuses.valueOf(split[3]), Integer.parseInt(split[0]));
+                taskStr = new Task(split[2], split[4], Statuses.valueOf(split[3]), Duration.parse(split[7]),
+                        LocalDateTime.parse(split[6]));
                 tasks.put(Integer.parseInt(split[0]), taskStr);
                 break;
             case "Epic":
-                taskStr = new Epic(split[2], split[4], Integer.parseInt(split[0]));
+                taskStr = new Epic(split[2], split[4], Duration.parse(split[7]), LocalDateTime.parse(split[6]));
                 taskStr.setStatus(Statuses.valueOf(split[3]));
                 epics.put(Integer.parseInt(split[0]), (Epic) taskStr);
                 break;
             case "Subtask":
-                taskStr = new Subtask(split[2], split[4], Integer.parseInt(split[0]), Statuses.valueOf(split[3]),
-                        Integer.parseInt(split[5]));
+                taskStr = new Subtask(split[2], split[4], Statuses.valueOf(split[3]),
+                        Integer.parseInt(split[5]), Duration.parse(split[7]), LocalDateTime.parse(split[6]));
                 subtasks.put(Integer.parseInt(split[0]), (Subtask) taskStr);
                 break;
             default:
