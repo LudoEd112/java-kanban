@@ -86,7 +86,7 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public void setEndTime(LocalDateTime endTime){
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
