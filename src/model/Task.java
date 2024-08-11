@@ -9,7 +9,7 @@ public class Task {
     protected String description;
     protected Statuses status;
     protected TypesOfTasks typesOfTasks;
-    private Duration duration = Duration.ofMinutes(15);
+    private Duration duration;
     private LocalDateTime startTime = LocalDateTime.now();
     protected LocalDateTime endTime;
 

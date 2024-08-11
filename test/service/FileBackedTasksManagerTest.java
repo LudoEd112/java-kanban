@@ -31,8 +31,8 @@ class FileBackedTasksManagerTest {
 
     @BeforeEach
     public void BeforeEach() throws IOException {
-        File fileTest = File.createTempFile("fileTest", ".csv", new File("src/testFiles"));
-        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("src/testFiles"));
+        File fileTest = File.createTempFile("fileTest", ".csv", new File("test/testFiles"));
+        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("test/testFiles"));
         Managers manager = new Managers();
         fileBackedTasksManager = manager.getDefaultFileBackedTaskManager(fileTest.toPath(), fileTestHistory.toPath());
         fileTest.deleteOnExit();

@@ -10,10 +10,15 @@ import exceptions.InvalidInputException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected int id;
+    private int id;
     protected final Map<Integer, Task> tasks;
     protected final Map<Integer, Subtask> subtasks;
     protected final Map<Integer, Epic> epics;
