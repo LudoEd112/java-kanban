@@ -11,9 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +29,8 @@ class FileBackedTasksManagerTest {
 
     @BeforeEach
     public void BeforeEach() throws IOException {
-        File fileTest = File.createTempFile("fileTest", ".csv", new File("test/testFiles"));
-        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("test/testFiles"));
+        File fileTest = File.createTempFile("fileTest", ".csv", new File("test"));
+        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("test"));
         Managers manager = new Managers();
         fileBackedTasksManager = manager.getDefaultFileBackedTaskManager(fileTest.toPath(), fileTestHistory.toPath());
         fileTest.deleteOnExit();
@@ -40,7 +38,7 @@ class FileBackedTasksManagerTest {
     }
 
     @Test
-    public void loadFromHistoryFileTest() throws IOException, InvalidInputException {
+    public void loadFromHistoryFileTest() throws InvalidInputException {
 
         firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW, Duration.of(30, ChronoUnit.MINUTES),
                 LocalDateTime.of(2024, 7, 20, 10, 0));
@@ -74,7 +72,7 @@ class FileBackedTasksManagerTest {
     }
 
     @Test
-    public void loadFromFileTest() throws IOException{
+    public void loadFromFileTest(){
         fileBackedTasksManager.fromFile();
         Assertions.assertNotNull(fileBackedTasksManager.getAllTasks().size());
     }
