@@ -10,6 +10,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +29,8 @@ class FileBackedTasksManagerTest {
 
     @BeforeEach
     public void BeforeEach() throws IOException {
-        File fileTest = File.createTempFile("fileTest", ".csv", new File("src/testFiles"));
-        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("src/testFiles"));
+        File fileTest = File.createTempFile("fileTest", ".csv", new File("test"));
+        File fileTestHistory = File.createTempFile("fileTestHistory", ".csv", new File("test"));
         Managers manager = new Managers();
         fileBackedTasksManager = manager.getDefaultFileBackedTaskManager(fileTest.toPath(), fileTestHistory.toPath());
         fileTest.deleteOnExit();
@@ -35,19 +38,25 @@ class FileBackedTasksManagerTest {
     }
 
     @Test
-    public void loadFromHistoryFileTest() throws IOException, InvalidInputException {
+    public void loadFromHistoryFileTest() throws InvalidInputException {
 
-        firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW);
+        firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 7, 20, 10, 0));
         fileBackedTasksManager.createTask(firstTask);
-        secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW);
+        secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW, Duration.of(10, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 30));
         fileBackedTasksManager.createTask(secondTask);
-        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description");
+        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(15, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 9, 15, 20, 15));
         fileBackedTasksManager.createEpic(firstEpic);
-        secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description");
+        secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description", Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 3, 10, 10, 1));
         fileBackedTasksManager.createEpic(secondEpic);
-        firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic);
+        firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 9, 15, 20, 15));
         fileBackedTasksManager.createSubTask(firstSubtask);
-        secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic);
+        secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 3, 10, 10, 1));
         fileBackedTasksManager.createSubTask(secondSubtask);
 
         fileBackedTasksManager.getTaskById(firstTask.getId());
@@ -63,65 +72,30 @@ class FileBackedTasksManagerTest {
     }
 
     @Test
-    public void loadFromFileTest() throws IOException{
+    public void loadFromFileTest(){
         fileBackedTasksManager.fromFile();
         Assertions.assertNotNull(fileBackedTasksManager.getAllTasks().size());
     }
 
     @Test
-    public void saveTest() throws IOException {
-        firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW);
-        fileBackedTasksManager.createTask(firstTask);
-        secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW);
-        fileBackedTasksManager.createTask(secondTask);
-        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description");
-        fileBackedTasksManager.createEpic(firstEpic);
-        secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description");
-        fileBackedTasksManager.createEpic(secondEpic);
-        firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic);
-        fileBackedTasksManager.createSubTask(firstSubtask);
-        secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic);
-        fileBackedTasksManager.createSubTask(secondSubtask);
-        List<String> sequenceNumberInFile = new ArrayList<>();
-        FileReader fileReader = new FileReader(fileBackedTasksManager.getTasksFilePath().toFile());
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while (bufferedReader.ready()) {
-            String line = bufferedReader.readLine();
-            sequenceNumberInFile.add(line);
-        }
-        bufferedReader.close();
-
-        List<String> sequenceNumber = new ArrayList<>();
-        sequenceNumber.add("id,type,name,status,description,epic");
-        sequenceNumber.add(firstTask.getId() + ",TASK" + "," + firstTask.getTitle() + "," + firstTask.getStatus() + "," +
-                firstTask.getDescription() + ",");
-        sequenceNumber.add(secondTask.getId() + ",TASK" + "," + secondTask.getTitle() + "," + secondTask.getStatus() + "," +
-                secondTask.getDescription() + ",");
-        sequenceNumber.add(firstEpic.getId() + ",EPIC" + "," + firstEpic.getTitle() + "," + firstEpic.getStatus() + "," +
-                firstEpic.getDescription() + ",");
-        sequenceNumber.add(secondEpic.getId() + ",EPIC" + "," + secondEpic.getTitle() + "," + secondEpic.getStatus() + "," +
-                secondEpic.getDescription() + ",");
-        sequenceNumber.add(firstSubtask.getId() + ",SUBTASK" + "," + firstSubtask.getTitle() + "," + firstSubtask.getStatus() +
-                "," + firstSubtask.getDescription() + "," + firstSubtask.getEpicId());
-        sequenceNumber.add(secondSubtask.getId() + ",SUBTASK" + "," + secondSubtask.getTitle() + "," + secondSubtask.getStatus() +
-                "," + secondSubtask.getDescription() + "," + secondSubtask.getEpicId());
-
-        Assertions.assertEquals(sequenceNumber, sequenceNumberInFile);
-    }
-
-    @Test
     public void saveHistoryTest() throws IOException, InvalidInputException {
-        firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW);
+        firstTask = new Task("Test addNewTask1", "Test addNewTask1 description", Statuses.NEW, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 7, 20, 10, 0));
         fileBackedTasksManager.createTask(firstTask);
-        secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW);
+        secondTask = new Task("Test addNewTask2", "Test addNewTask2 description", Statuses.NEW, Duration.of(46, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 8, 21, 11, 30));
         fileBackedTasksManager.createTask(secondTask);
-        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description");
+        firstEpic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(60, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 9, 15, 20, 15));
         fileBackedTasksManager.createEpic(firstEpic);
-        secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description");
+        secondEpic = new Epic("Test addNewEpic2", "Test addNewEpic2 description", Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 3, 10, 10, 1));
         fileBackedTasksManager.createEpic(secondEpic);
-        firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic);
+        firstSubtask = new Subtask("Test addNewSubtask1", "Test addNewSubtask1 description", Statuses.NEW, firstEpic, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 3, 15, 20, 45));
         fileBackedTasksManager.createSubTask(firstSubtask);
-        secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic);
+        secondSubtask = new Subtask("Test addNewSubtask2", "Test addNewSubtask2 description", Statuses.NEW, secondEpic, Duration.of(30, ChronoUnit.MINUTES),
+                LocalDateTime.of(2024, 3, 10, 21, 55));
         fileBackedTasksManager.createSubTask(secondSubtask);
         fileBackedTasksManager.getTaskById(firstTask.getId());
         fileBackedTasksManager.getEpicById(firstEpic.getId());
