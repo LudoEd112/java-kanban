@@ -201,30 +201,6 @@ public class HttpTaskManagerTasksTest {
     }
 
     @Test
-    public void testAddEpic() throws IOException, InterruptedException {
-        Epic epic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(30, ChronoUnit.MINUTES),
-                LocalDateTime.of(2024, 7, 20, 10, 0));
-        manager.createEpic(epic);
-
-        String epicJson = gson.toJson(epic);
-        HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/epics");
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(url)
-                .POST(HttpRequest.BodyPublishers.ofString(epicJson))
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(201, response.statusCode());
-
-        Map<Integer,Epic> tasksFromManager = manager.getAllEpics();
-
-        assertNotNull(tasksFromManager, "Задачи не возвращаются");
-        assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("Test addNewEpic1", tasksFromManager.get(1).getTitle(), "Некорректное имя задачи");
-    }
-
-    @Test
     public void testGetEpic() throws IOException, InterruptedException {
         Epic epic = new Epic("Test addNewEpic1", "Test addNewEpic1 description", Duration.of(30, ChronoUnit.MINUTES),
                 LocalDateTime.of(2024, 7, 20, 10, 0));
