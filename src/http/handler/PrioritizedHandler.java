@@ -14,16 +14,15 @@ public class PrioritizedHandler extends BaseHttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) {
-        try (exchange) {
-            try {
-                if (exchange.getRequestMethod().equals("GET")) {
-                    writeResponse(exchange, getGson().toJson(taskManager.getPrioritizedTasks()), 200);
-                } else
-                    writeResponse(exchange, "Ошибка при обработке запроса", 400);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    public void handle(HttpExchange exchange) throws IOException {
+        try {
+            if (exchange.getRequestMethod().equals("GET")) {
+                writeResponse(exchange, getGson().toJson(taskManager.getPrioritizedTasks()), 200);
+            } else
+                writeResponse(exchange, "Ошибка при обработке запроса", 400);
+        } catch (IOException e) {
+            e.printStackTrace(System.out);
+            writeResponse(exchange, "Ошибка ввода-вывода", 500);
         }
     }
 }

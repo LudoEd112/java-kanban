@@ -1,6 +1,7 @@
 package http.handler;
 
 import com.sun.net.httpserver.HttpExchange;
+import exceptions.HttpHandlerException;
 import service.TaskManager;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class HistoryHandler extends BaseHttpHandler {
                 } else
                     writeResponse(exchange, "Ошибка при обработке запроса", 404);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new HttpHandlerException("Ошибка ввода-вывода при обработке запроса", e);
             }
         }
     }
