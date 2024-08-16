@@ -5,6 +5,7 @@ import exceptions.InvalidInputException;
 import model.Subtask;
 import model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,8 @@ public interface TaskManager {
     Epic getEpicById(int id) throws InvalidInputException;
 
     Map<Integer, Epic> getAllEpics();
+
+    ArrayList<Subtask> getEpicSubtasks(Epic epic);
 
     void removeEpicById(int id) throws InvalidInputException;
 

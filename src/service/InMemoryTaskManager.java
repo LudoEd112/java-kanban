@@ -120,6 +120,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public ArrayList<Subtask> getEpicSubtasks(Epic epic) {
+        List<Integer> epicSubtasksId = epic.getEpicSubtasks();
+        ArrayList<Subtask> epicSubtask = new ArrayList<>();
+        for (Integer subtaskIds : epicSubtasksId) {
+            epicSubtask.add(subtasks.get(subtaskIds));
+        }
+        return epicSubtask;
+    }
+
+    @Override
     public void removeEpicById(int id) throws InvalidInputException {
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
@@ -147,7 +157,6 @@ public class InMemoryTaskManager implements TaskManager {
         subtask.getEpic().getEpicSubtasks().add(id);
         checkStatus(subtask.getEpic());
         prioritizedTasks.add(subtask);
-
     }
 
     @Override
